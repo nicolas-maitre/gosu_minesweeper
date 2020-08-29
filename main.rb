@@ -2,12 +2,12 @@ require 'gosu'
 require 'pp'
 class MinesweeperTest < Gosu::Window
     def initialize
+        @SELECTED_DIFFICULTY = :intermediate
         @DIFFICULTIES = {
             beginner: [10, 10, 10],
             intermediate: [16, 16, 40],
             expert: [30, 16, 99]
         }
-        @SELECTED_DIFFICULTY = :beginner
         @GRID_WIDTH, @GRID_HEIGHT, @MINES_COUNT = @DIFFICULTIES[@SELECTED_DIFFICULTY]
         @TILES_SIZE = 30
         @TILES_SPACING = 5
@@ -96,7 +96,7 @@ class MinesweeperTest < Gosu::Window
                 )) if @proximity_map[x][y] && tile_type == :clear && @proximity_map[x][y] != 0
 
                 #flag
-                @FONT.draw_text("🚩F", x_pos + 8, y_pos + 2, 0, 1, 1, @FLAG_COLOR) if @flags_map[x][y] && tile_type == :default
+                @FONT.draw_text("🚩F", x_pos + 8, y_pos + 2, 0, 1, 1, @FLAG_COLOR) if @flags_map[x][y] && (tile_type == :default || @game_status == :lost)
             end
         end
         #info
