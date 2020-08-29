@@ -2,7 +2,7 @@ require 'gosu'
 require 'pp'
 class MinesweeperTest < Gosu::Window
     def initialize
-        @SELECTED_DIFFICULTY = :intermediate
+        @SELECTED_DIFFICULTY = :beginner
         @DIFFICULTIES = {
             beginner: [10, 10, 10],
             intermediate: [16, 16, 40],
@@ -22,8 +22,8 @@ class MinesweeperTest < Gosu::Window
         }
         @FLAG_COLOR = Gosu::Color.new(255, 0, 0)
         @NUMBER_COLOR_RANGE = [[50, 255, 50], [255, 50, 50]]
-        @FONT = Gosu::Font.new(self, Gosu::default_font_name, 30)
-        @BIG_FONT = Gosu::Font.new(self, Gosu::default_font_name, 60)
+        @FONT = Gosu::Font.new(self, Gosu::default_font_name, @TILES_SIZE)
+        @BIG_FONT = Gosu::Font.new(self, Gosu::default_font_name, @TILES_SIZE * 2)
         @SAFE_LANDING_RADIUS = 1
         restart
     end
@@ -89,18 +89,18 @@ class MinesweeperTest < Gosu::Window
                 draw_rect(x_pos,y_pos,@TILES_SIZE,@TILES_SIZE,@TILE_COLORS[tile_type])
 
                 #number
-                @FONT.draw_text(@proximity_map[x][y], x_pos + 8, y_pos + 2, 0, 1, 1, Gosu::Color.new(
+                @FONT.draw_text(@proximity_map[x][y], x_pos + @TILES_SIZE/4, y_pos + 2, 0, 1, 1, Gosu::Color.new(
                     (@NUMBER_COLOR_RANGE[1][0] - @NUMBER_COLOR_RANGE[0][0])*(@proximity_map[x][y]/8.0) + @NUMBER_COLOR_RANGE[0][0],
                     (@NUMBER_COLOR_RANGE[1][1] - @NUMBER_COLOR_RANGE[0][1])*(@proximity_map[x][y]/8.0) + @NUMBER_COLOR_RANGE[0][1],
                     (@NUMBER_COLOR_RANGE[1][2] - @NUMBER_COLOR_RANGE[0][2])*(@proximity_map[x][y]/8.0) + @NUMBER_COLOR_RANGE[0][2],
                 )) if @proximity_map[x][y] && tile_type == :clear && @proximity_map[x][y] != 0
 
                 #flag
-                @FONT.draw_text("🚩F", x_pos + 8, y_pos + 2, 0, 1, 1, @FLAG_COLOR) if @flags_map[x][y] && (tile_type == :default || @game_status == :lost)
+                @FONT.draw_text("🚩F", x_pos + @TILES_SIZE / 4, y_pos + 2, 0, 1, 1, @FLAG_COLOR) if @flags_map[x][y] && (tile_type == :default || @game_status == :lost)
             end
         end
         #info
-        @FONT.draw_text("🚩F #{(@MINES_COUNT - @flags_count)}", self.width - 70, 8, 0)
+        @FONT.draw_text("🚩F #{(@MINES_COUNT - @flags_count)}", self.width - @TILES_SIZE*4/2, 8, 0)
         @FONT.draw_text("#{@current_time}s", 10, 8, 0)
         
         @BIG_FONT.draw_text("PERDU! (f5)", 40, (@GRID_HEIGHT * (@TILES_SIZE + @TILES_SPACING))/2 - 30 + @TOP_OFFSET, 0, 1, 1, Gosu::Color.new(255, 0, 0)) if @game_status == :lost
