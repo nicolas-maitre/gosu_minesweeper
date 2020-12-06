@@ -9,7 +9,7 @@ class MinesweeperTest < Gosu::Window
             expert: [30, 16, 99]
         }
         @GRID_WIDTH, @GRID_HEIGHT, @MINES_COUNT = @DIFFICULTIES[@SELECTED_DIFFICULTY]
-        @TILES_SIZE = 30
+        @TILES_SIZE = 40
         @TILES_SPACING = 5
         @TOP_OFFSET = 40
         super @GRID_WIDTH*(@TILES_SIZE + @TILES_SPACING) + @TILES_SPACING, @GRID_HEIGHT*(@TILES_SIZE + @TILES_SPACING) + @TILES_SPACING + @TOP_OFFSET, {resizable: false}
