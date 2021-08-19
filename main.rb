@@ -1,16 +1,39 @@
 require 'gosu'
 require 'pp'
+
+def parsed_argv
+    args = {}
+    curr_key = nil
+    ARGV.each_with_index do |val,index|
+        if(val[0]=="-")
+            curr_key = val[1..]
+            args[curr_key] = nil
+        elsif !args[curr_key]
+            args[curr_key] = val
+        end
+    end
+    args
+end
+
 class MinesweeperTest < Gosu::Window
     def initialize
-        @SELECTED_DIFFICULTY = :beginner
+        args = parsed_argv
+
         @DIFFICULTIES = {
-            beginner: [10, 10, 10],
-            intermediate: [16, 16, 40],
-            expert: [30, 16, 99]
+            "beginner" => [10, 10, 10, 1],
+            "intermediate" => [16, 16, 40, 0.8],
+            "expert" => [30, 16, 99, 0.6]
         }
-        @GRID_WIDTH, @GRID_HEIGHT, @MINES_COUNT = @DIFFICULTIES[@SELECTED_DIFFICULTY]
-        @TILES_SIZE = 40
-        @TILES_SPACING = 5
+        @SELECTED_DIFFICULTY = @DIFFICULTIES.keys.include?(args["d"]) ? args["d"] : "beginner"
+        @GRID_WIDTH, @GRID_HEIGHT, @MINES_COUNT, @SCALE = @DIFFICULTIES[@SELECTED_DIFFICULTY]
+
+        #argvs
+        @GRID_WIDTH, @GRID_HEIGHT = args["s"].split("x").map(&:to_i) if(args["s"] && args["s"].include?("x"))
+        @MINES_COUNT = args["m"].to_i if(args["m"])
+        @SCALE = args["z"].to_f/100 if(args["z"])
+
+        @TILES_SIZE = (40 * @SCALE).round
+        @TILES_SPACING = (5 * @SCALE).round
         @TOP_OFFSET = 40
         super @GRID_WIDTH*(@TILES_SIZE + @TILES_SPACING) + @TILES_SPACING, @GRID_HEIGHT*(@TILES_SIZE + @TILES_SPACING) + @TILES_SPACING + @TOP_OFFSET, {resizable: false}
         self.caption = "The Worst Ruby Minesweeper"
